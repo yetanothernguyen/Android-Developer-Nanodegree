@@ -4,12 +4,17 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by nguyenvunguyen on 9/6/15.
  */
-public class Movie {
+public class Movie implements Serializable {
 
     private String title;
     private String image;
@@ -68,6 +73,23 @@ public class Movie {
 
     public String getImageURL(){
         return "https://image.tmdb.org/t/p/w185" + this.getImage();
+    }
+
+    public String getFormattedUserRating() {
+        return Double.toString(this.getUserRating()) + "/10";
+    }
+
+    public int getReleaseYear() {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            Date date = formatter.parse(this.getReleaseDate());
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(date);
+            return cal.get(Calendar.YEAR);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return -1;
+        }
     }
 
     public static ArrayList<Movie> fromJson(String json)

@@ -2,4 +2,6 @@
     <string name="app_name">Popular Movies</string>
     <string name="action_most_popular">Most Popular</string>
     <string name="action_highest_rated">Highest Rated</string>
+    <string name="title_activity_detail">Movie Details</string>
+    <string name="action_settings">Settings</string>
 </resources>
