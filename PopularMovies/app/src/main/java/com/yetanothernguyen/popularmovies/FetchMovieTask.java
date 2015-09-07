@@ -1,5 +1,6 @@
 package com.yetanothernguyen.popularmovies;
 
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -16,10 +17,11 @@ import java.util.ArrayList;
 /**
  * Created by nguyenvunguyen on 9/6/15.
  */
-public class FetchMovieTask extends AsyncTask<Void, Void, ArrayList<Movie>> {
+public class FetchMovieTask extends AsyncTask<FetchMovieTask.SortBy, Void, ArrayList<Movie>> {
 
     private final String LOG_TAG = FetchMovieTask.class.getSimpleName();
     private OnTaskCompleted listener;
+    public enum SortBy { MOST_POPULAR, HIGHEST_RATED }
 
     public interface OnTaskCompleted {
         void onTaskCompleted(ArrayList<Movie> movies);
@@ -30,13 +32,33 @@ public class FetchMovieTask extends AsyncTask<Void, Void, ArrayList<Movie>> {
     }
 
     @Override
-    protected ArrayList<Movie> doInBackground(Void... params) {
+    protected ArrayList<Movie> doInBackground(SortBy... params) {
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
         String moviesJson;
+        final String BASE_URL = "https://api.themoviedb.org/3/discover/movie?";
+        final int MINIMUM_VOTE_COUNT = 1000;
+        SortBy sortBy;
+        if (params.length == 0) {
+            sortBy = SortBy.MOST_POPULAR;
+        } else {
+            sortBy = params[0];
+        }
 
         try {
-            URL url = new URL("https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=7bb88989e38842716731af3ac8525132");
+            Uri.Builder uriBuilder = Uri.parse(BASE_URL).buildUpon();
+            uriBuilder.appendQueryParameter("api_key", "7bb88989e38842716731af3ac8525132");
+
+            if (sortBy == SortBy.MOST_POPULAR) {
+                uriBuilder.appendQueryParameter("sort_by", "popularity.desc");
+            } else if (sortBy == SortBy.HIGHEST_RATED) {
+                uriBuilder.appendQueryParameter("sort_by", "vote_average.desc");
+                uriBuilder.appendQueryParameter("vote_count.gte", Integer.toString(MINIMUM_VOTE_COUNT));
+            }
+
+            Uri builtUri = uriBuilder.build();
+            URL url = new URL(builtUri.toString());
+
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("GET");
             urlConnection.connect();

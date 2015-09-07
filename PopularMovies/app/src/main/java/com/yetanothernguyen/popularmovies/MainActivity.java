@@ -1,5 +1,6 @@
 package com.yetanothernguyen.popularmovies;
 
+import android.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -29,10 +30,19 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_most_popular) {
+            fetchMovies(FetchMovieTask.SortBy.MOST_POPULAR);
+            return true;
+        } else if (id == R.id.action_highest_rated) {
+            fetchMovies(FetchMovieTask.SortBy.HIGHEST_RATED);
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void fetchMovies(FetchMovieTask.SortBy sortBy) {
+        MainActivityFragment fragment = (MainActivityFragment) getSupportFragmentManager().findFragmentById(R.id.fragment);
+        fragment.fetchMovies(sortBy);
     }
 }
