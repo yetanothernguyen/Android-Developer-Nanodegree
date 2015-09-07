@@ -5,10 +5,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -26,16 +29,21 @@ public class MoviesAdapter extends ArrayAdapter<Movie> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Movie movie = getItem(position);
-        Log.d(LOG_TAG, "getView: movie " + movie.getTitle());
+        ImageView imageView;
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.grid_item, parent, false);
+            imageView = new ImageView(getContext());
+            imageView.setLayoutParams(new ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT));
+            imageView.setPadding(0, 0, 0, 0);
+            imageView.setAdjustViewBounds(true);
+        } else {
+            imageView = (ImageView) convertView;
         }
 
-        Log.d(LOG_TAG, "getView: loading " + movie.getImageURL());
-        ImageView imageView = (ImageView) convertView.findViewById(R.id.imageview_poster);
+        Movie movie = getItem(position);
         Picasso.with(getContext()).load(movie.getImageURL()).into(imageView);
 
-        return convertView;
+        return imageView;
     }
 }

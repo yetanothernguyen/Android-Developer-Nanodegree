@@ -1,6 +1,7 @@
 package com.yetanothernguyen.popularmovies;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
@@ -39,10 +40,8 @@ public class MainActivityFragment extends Fragment implements FetchMovieTask.OnT
 
     @Override
     public void onTaskCompleted(ArrayList<Movie> movies) {
-        Log.d(LOG_TAG, "onTaskCompleted: movies " + movies.size());
         mMoviesAdapter.clear();
         for (Movie movie : movies) {
-            Log.d(LOG_TAG, "onTaskCompleted: adding " + movie.getTitle());
             mMoviesAdapter.add(movie);
         }
     }
