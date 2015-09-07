@@ -47,7 +47,7 @@ public class FetchMovieTask extends AsyncTask<FetchMovieTask.SortBy, Void, Array
 
         try {
             Uri.Builder uriBuilder = Uri.parse(BASE_URL).buildUpon();
-            uriBuilder.appendQueryParameter("api_key", "7bb88989e38842716731af3ac8525132");
+            uriBuilder.appendQueryParameter("api_key", BuildConfig.MOVIEDB_API_KEY);
 
             if (sortBy == SortBy.MOST_POPULAR) {
                 uriBuilder.appendQueryParameter("sort_by", "popularity.desc");
