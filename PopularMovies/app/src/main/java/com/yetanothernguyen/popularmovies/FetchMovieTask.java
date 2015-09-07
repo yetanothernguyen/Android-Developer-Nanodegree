@@ -36,9 +36,11 @@ public class FetchMovieTask extends AsyncTask<FetchMovieTask.SortBy, Void, Array
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
         String moviesJson;
+        SortBy sortBy;
+
         final String BASE_URL = "https://api.themoviedb.org/3/discover/movie?";
         final int MINIMUM_VOTE_COUNT = 1000;
-        SortBy sortBy;
+
         if (params.length == 0) {
             sortBy = SortBy.MOST_POPULAR;
         } else {
