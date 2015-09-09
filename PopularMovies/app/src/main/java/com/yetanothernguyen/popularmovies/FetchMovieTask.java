@@ -17,11 +17,13 @@ import java.util.ArrayList;
 /**
  * Created by nguyenvunguyen on 9/6/15.
  */
-public class FetchMovieTask extends AsyncTask<FetchMovieTask.SortBy, Void, ArrayList<Movie>> {
+public class FetchMovieTask extends AsyncTask<String, Void, ArrayList<Movie>> {
 
-    private final String LOG_TAG = FetchMovieTask.class.getSimpleName();
+    private final static String LOG_TAG = FetchMovieTask.class.getSimpleName();
     private OnTaskCompleted listener;
-    public enum SortBy { MOST_POPULAR, HIGHEST_RATED }
+
+    public final static String SORT_BY_MOST_POPULAR = "popularity.desc";
+    public final static String SORT_BY_HIGHEST_RATED = "vote_average.desc";
 
     public interface OnTaskCompleted {
         void onTaskCompleted(ArrayList<Movie> movies);
@@ -32,17 +34,17 @@ public class FetchMovieTask extends AsyncTask<FetchMovieTask.SortBy, Void, Array
     }
 
     @Override
-    protected ArrayList<Movie> doInBackground(SortBy... params) {
+    protected ArrayList<Movie> doInBackground(String... params) {
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
         String moviesJson;
-        SortBy sortBy;
+        String sortBy;
 
         final String BASE_URL = "https://api.themoviedb.org/3/discover/movie?";
         final int MINIMUM_VOTE_COUNT = 1000;
 
         if (params.length == 0) {
-            sortBy = SortBy.MOST_POPULAR;
+            sortBy = SORT_BY_MOST_POPULAR;
         } else {
             sortBy = params[0];
         }
@@ -51,10 +53,10 @@ public class FetchMovieTask extends AsyncTask<FetchMovieTask.SortBy, Void, Array
             Uri.Builder uriBuilder = Uri.parse(BASE_URL).buildUpon();
             uriBuilder.appendQueryParameter("api_key", BuildConfig.MOVIEDB_API_KEY);
 
-            if (sortBy == SortBy.MOST_POPULAR) {
-                uriBuilder.appendQueryParameter("sort_by", "popularity.desc");
-            } else if (sortBy == SortBy.HIGHEST_RATED) {
-                uriBuilder.appendQueryParameter("sort_by", "vote_average.desc");
+            if (sortBy.equals(SORT_BY_MOST_POPULAR)) {
+                uriBuilder.appendQueryParameter("sort_by", sortBy);
+            } else if (sortBy.equals(SORT_BY_HIGHEST_RATED)) {
+                uriBuilder.appendQueryParameter("sort_by", sortBy);
                 uriBuilder.appendQueryParameter("vote_count.gte", Integer.toString(MINIMUM_VOTE_COUNT));
             }
 

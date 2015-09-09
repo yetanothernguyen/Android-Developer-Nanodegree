@@ -1,6 +1,8 @@
 package com.yetanothernguyen.popularmovies;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
@@ -41,7 +43,7 @@ public class MainActivityFragment extends Fragment implements FetchMovieTask.OnT
         mMoviesAdapter = new MoviesAdapter(getActivity(), new ArrayList<Movie>());
         movies.setAdapter(mMoviesAdapter);
 
-        fetchMovies(FetchMovieTask.SortBy.MOST_POPULAR);
+        fetchMovies();
 
         return rootView;
     }
@@ -54,7 +56,10 @@ public class MainActivityFragment extends Fragment implements FetchMovieTask.OnT
         }
     }
 
-    public void fetchMovies(FetchMovieTask.SortBy sortBy) {
+    public void fetchMovies() {
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        String sortBy = sharedPref.getString(getString(R.string.preference_sort_by_key), FetchMovieTask.SORT_BY_MOST_POPULAR);
+
         FetchMovieTask fetchMovieTask = new FetchMovieTask(this);
         fetchMovieTask.execute(sortBy);
     }

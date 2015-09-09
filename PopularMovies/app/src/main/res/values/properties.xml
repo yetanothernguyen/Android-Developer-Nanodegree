@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="preference_file_key" translatable="false">com.yetanothernguyen.popularmovies.PREFERENCE_FILE_KEY</string>
+    <string name="preference_sort_by_key" translatable="false">SORT_BY</string>
+</resources>

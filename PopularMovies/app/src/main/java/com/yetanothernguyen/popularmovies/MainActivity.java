@@ -1,6 +1,8 @@
 package com.yetanothernguyen.popularmovies;
 
 import android.app.Fragment;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -31,18 +33,24 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_most_popular) {
-            fetchMovies(FetchMovieTask.SortBy.MOST_POPULAR);
+            fetchMovies(FetchMovieTask.SORT_BY_MOST_POPULAR);
             return true;
         } else if (id == R.id.action_highest_rated) {
-            fetchMovies(FetchMovieTask.SortBy.HIGHEST_RATED);
+            fetchMovies(FetchMovieTask.SORT_BY_HIGHEST_RATED);
             return true;
         }
+
 
         return super.onOptionsItemSelected(item);
     }
 
-    public void fetchMovies(FetchMovieTask.SortBy sortBy) {
+    public void fetchMovies(String sortBy) {
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(getString(R.string.preference_sort_by_key), sortBy);
+        editor.commit();
+
         MainActivityFragment fragment = (MainActivityFragment) getSupportFragmentManager().findFragmentById(R.id.fragment);
-        fragment.fetchMovies(sortBy);
+        fragment.fetchMovies();
     }
 }
