@@ -1,10 +1,14 @@
 package com.yetanothernguyen.popularmovies;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -70,9 +74,11 @@ public class MainActivityFragment extends Fragment implements FetchMovieTask.OnT
 
     @Override
     public void onTaskCompleted(ArrayList<Movie> movies) {
-        mMovies.clear();
-        mMovies.addAll(movies);
-        setMoviesAdapter();
+        if (movies != null) {
+            mMovies.clear();
+            mMovies.addAll(movies);
+            setMoviesAdapter();
+        }
     }
 
     public void fetchMovies() {
