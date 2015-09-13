@@ -20,7 +20,9 @@ import java.util.ArrayList;
 public class MainActivityFragment extends Fragment implements FetchMovieTask.OnTaskCompleted {
 
     private final String LOG_TAG = MainActivityFragment.class.getSimpleName();
+    private final String MOVIES_KEY = "MOVIES";
     private MoviesAdapter mMoviesAdapter;
+    private ArrayList<Movie> mMovies;
 
     public MainActivityFragment() {
     }
@@ -43,24 +45,49 @@ public class MainActivityFragment extends Fragment implements FetchMovieTask.OnT
         mMoviesAdapter = new MoviesAdapter(getActivity(), new ArrayList<Movie>());
         movies.setAdapter(mMoviesAdapter);
 
-        fetchMovies();
-
         return rootView;
     }
 
     @Override
-    public void onTaskCompleted(ArrayList<Movie> movies) {
-        mMoviesAdapter.clear();
-        for (Movie movie : movies) {
-            mMoviesAdapter.add(movie);
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            mMovies = savedInstanceState.getParcelableArrayList(MOVIES_KEY);
+            setMoviesAdapter();
+        } else {
+            mMovies = new ArrayList<>();
+            fetchMovies();
         }
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putParcelableArrayList(MOVIES_KEY, mMovies);
+
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onTaskCompleted(ArrayList<Movie> movies) {
+        mMovies.clear();
+        mMovies.addAll(movies);
+        setMoviesAdapter();
+    }
+
     public void fetchMovies() {
+        Log.d(LOG_TAG, "Fetching movies");
         SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
         String sortBy = sharedPref.getString(getString(R.string.preference_sort_by_key), FetchMovieTask.SORT_BY_MOST_POPULAR);
 
         FetchMovieTask fetchMovieTask = new FetchMovieTask(this);
         fetchMovieTask.execute(sortBy);
+    }
+
+    protected void setMoviesAdapter() {
+        mMoviesAdapter.clear();
+        for (Movie movie : mMovies) {
+            mMoviesAdapter.add(movie);
+        }
     }
 }
